@@ -1,24 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml;
 using UnityEngine;
 
 public class GeneratePlatform : MonoBehaviour
 {
-    [SerializeField] private GameObject[] m_platform;
+    //[SerializeField] private GameObject[] m_platform;
     private MeshRenderer m_platformMeshRend;
 
     private GameObject playerCapsule;
 
 
-    private void Awake()
+    private void Start()
     {
         playerCapsule = new GameObject("capsule");
         playerCapsule.transform.position = Vector3.zero;
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 20; i++)
         {
-            int randomPlatform = Random.Range(0, m_platform.Length);
-            GameObject platform = Instantiate(m_platform[randomPlatform], playerCapsule.transform.position,playerCapsule.transform.rotation);
+            //int randomPlatform = Random.Range(0, m_platform.Length);
+            GameObject platform = PlatformPool.Instance.GetPlatform();
+            if (platform == null) return;
+
+            platform.SetActive(true);
+            platform.transform.SetPositionAndRotation(playerCapsule.transform.position,playerCapsule.transform.rotation);
             if (platform.CompareTag("StairsUp"))
             {
                playerCapsule.transform.Translate(0,5f,0);
@@ -36,18 +37,14 @@ public class GeneratePlatform : MonoBehaviour
                     playerCapsule.transform.Rotate(0, 90f, 0);                
                 else                
                     playerCapsule.transform.Rotate(0, -90f, 0);
-                playerCapsule.transform.Translate(playerCapsule.transform.forward * -10f);                
+                playerCapsule.transform.Translate(Vector3.forward * -10f);                
                
             }
             playerCapsule.transform.Translate(0, 0, - 10f);
 
         }
     }
-    void Start()
-    {
-
-    }
-
+  
     void Update()
     {
 
